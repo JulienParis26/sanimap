@@ -1,0 +1,61 @@
+doctype html
+html(lang='fr')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description' content='')
+    meta(name='author' content='')
+    title Que faire à Paris ?
+    // Bootstrap core CSS
+    link(href='vendor/bootstrap/css/bootstrap.min.css' rel='stylesheet')
+    // Leaflet CSS
+    link(href='vendor/leaflet/leaflet.css' rel='stylesheet')
+    // My Custom CSS
+    link(href='assets/css/style.css' rel='stylesheet')
+  body
+    // Navigation
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.static-top
+      .container
+        a.navbar-brand(href='/') Que faire à Paris ?
+        button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarResponsive' aria-controls='navbarResponsive' aria-expanded='false' aria-label='Toggle navigation')
+          span.navbar-toggler-icon
+        #navbarResponsive.collapse.navbar-collapse
+          ul.navbar-nav.ml-auto
+            li.nav-item
+              a.nav-link(href='/')
+                | Accueil
+                span.sr-only (current)
+            li.nav-item.active
+              a.nav-link(href='/carte') Carte
+    // Page Content
+    .container
+      .row
+        .col-lg-12.text-center
+          h1.mt-5 Carte des activités
+          p.lead Démo de cours - Carte des activités
+          #mapid
+    // Bootstrap core JavaScript
+    script(src='vendor/jquery/jquery.slim.min.js')
+    script(src='vendor/bootstrap/js/bootstrap.bundle.min.js')
+    // Leaflet JavaScript
+    script(src='vendor/leaflet/leaflet.js')
+    script.
+      var mymap = L.map('mapid').setView([48.853, 2.35], 13);
+      // J'ai choisi un fond de carte sur https://leaflet-extras.github.io/leaflet-providers/preview/
+      // J'ai choisi  CartoDB Voyager...
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        subdomains: 'abcd',
+        maxZoom: 19}).addTo(mymap);
+      var marker = L.marker([48.853, 2.35]).addTo(mymap);
+      marker.bindPopup("<b>Notre Dame de Paname</b>");
+
+      // Pour récupérer ma variable activites en tant que texte dans le front, j'utilise l'interpolation
+      var activites = !{JSON.stringify(activites)};
+      for(const activite of activites){
+        if(activite.geometry){
+          console.log(activite.geometry.coordinates);
+          var marker = L.marker([activite.geometry.coordinates[1], activite.geometry.coordinates[0]]).addTo(mymap);
+          marker.bindPopup("<b>"+activite.fields.title +"</b><br>"+activite.fields.date_start );
+        }
+      }

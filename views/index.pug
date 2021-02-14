@@ -1,0 +1,38 @@
+doctype html
+html(lang='fr')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description' content='')
+    meta(name='author' content='')
+    title SaniMap
+    // Bootstrap core CSS
+    link(href='vendor/bootstrap/css/bootstrap.min.css' rel='stylesheet')
+  body
+    // Navigation
+    nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.static-top
+      .container
+        a.navbar-brand(href='/') Toilettes publiques à Paris
+        button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarResponsive' aria-controls='navbarResponsive' aria-expanded='false' aria-label='Toggle navigation')
+          span.navbar-toggler-icon
+        #navbarResponsive.collapse.navbar-collapse
+          ul.navbar-nav.ml-auto
+            li.nav-item.active
+              a.nav-link(href='/')
+                | Accueil
+                span.sr-only (current)
+            li.nav-item
+              a.nav-link(href='/carte') Carte
+    // Page Content
+    .container
+      .row
+        .col-lg-12
+          h1.mt-5 Toilettes publiques à Paris
+          p.lead Liste des adresses :
+          ul.list
+            // Je parcours mon tableau activites et pour chaque activite, j'affiche un li avec son nom
+            each sanisette in sanisettes
+                li=sanisette.fields.adresse + " " + sanisette.fields.horaire
+    // Bootstrap core JavaScript
+    script(src='vendor/jquery/jquery.slim.min.js')
+    script(src='vendor/bootstrap/js/bootstrap.bundle.min.js')
