@@ -1,6 +1,11 @@
 // Chargement d'express
 const express = require('express');
-const app = express();
+const aws = require('aws-sdk');
+const app = express(),
+    s3 = new aws.S3();
+const bodyParser = require('body-parser');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
 // Définition de pug comme moteur de template 
 app.set('view engine', 'pug');
@@ -11,7 +16,7 @@ app.use(express.static(__dirname + '/public'));
 // Paramètres de connexion à mongoDb
 const dbName = "sanimap";
 const collName = "sanisettes";
-const dbUrl = "mongodb+srv://Julien:admin@clusterjulien.j5olw.mongodb.net/test?authSource=admin&replicaSet=atlas-xesq6s-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true";
+const dbUrl = "mongodb://23.97.161.85:27017/?readPreference=primary&appname=MongoDB%20Compass&ssl=false";
 const mongoClient = require("mongodb").MongoClient;
 
 // Gestion des routes
@@ -47,7 +52,7 @@ app.get('/carte', function (req, res) {
         }
         const collection = client.db(dbName).collection(collName);
         // Je ne prends que les activités dont la date est supérieure à celle d'aujourd'hui
-        collection.find({"fields.date_start" : { $gte : new Date().toISOString()}}).toArray(function(err, data){
+        collection.find("fields.horaire").toArray(function(err, data){
             if(err){
                 throw err;
             }
@@ -56,6 +61,36 @@ app.get('/carte', function (req, res) {
         })
     })
 })
+
+
+aws.config.update({
+	accessKeyId: 'AKIAIRPNR4IP65IFSBYQ',
+    secretAccessKey: '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',    
+    region: 'us-east-2'
+});
+
+
+
+app.use(bodyParser.json());
+
+const upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: 'sanimap1',
+        key: function (req, file, cb) {
+            cb(null, file.originalname);
+        }
+    })
+});
+app.get('/images', function (req, res) {
+    res.sendFile(__dirname + '/upload.html');
+});
+
+app.post('/upload', upload.array('uploadFile',1), function (req, res, next) {
+    res.send("File uploaded successfully to Amazon S3 Server!");
+});
+
+
 
 // Démarrage de notre app
 app.listen(4242, function(){

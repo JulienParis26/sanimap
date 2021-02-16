@@ -5,7 +5,7 @@ html(lang='fr')
     meta(name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no')
     meta(name='description' content='')
     meta(name='author' content='')
-    title Que faire à Paris ?
+    title Toilettes publiques à Paris
     // Bootstrap core CSS
     link(href='vendor/bootstrap/css/bootstrap.min.css' rel='stylesheet')
     // Leaflet CSS
@@ -16,7 +16,7 @@ html(lang='fr')
     // Navigation
     nav.navbar.navbar-expand-lg.navbar-dark.bg-dark.static-top
       .container
-        a.navbar-brand(href='/') Que faire à Paris ?
+        a.navbar-brand(href='/') Toilettes publiques à Paris
         button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbarResponsive' aria-controls='navbarResponsive' aria-expanded='false' aria-label='Toggle navigation')
           span.navbar-toggler-icon
         #navbarResponsive.collapse.navbar-collapse
@@ -27,12 +27,13 @@ html(lang='fr')
                 span.sr-only (current)
             li.nav-item.active
               a.nav-link(href='/carte') Carte
+              li.nav-item.active
+            a.nav-link(href='/images') Upload
     // Page Content
     .container
       .row
         .col-lg-12.text-center
-          h1.mt-5 Carte des activités
-          p.lead Démo de cours - Carte des activités
+          h1.mt-5 Carte des toilettes
           #mapid
     // Bootstrap core JavaScript
     script(src='vendor/jquery/jquery.slim.min.js')
@@ -47,15 +48,16 @@ html(lang='fr')
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 19}).addTo(mymap);
-      var marker = L.marker([48.853, 2.35]).addTo(mymap);
-      marker.bindPopup("<b>Notre Dame de Paname</b>");
+    
 
       // Pour récupérer ma variable activites en tant que texte dans le front, j'utilise l'interpolation
-      var activites = !{JSON.stringify(activites)};
-      for(const activite of activites){
-        if(activite.geometry){
-          console.log(activite.geometry.coordinates);
-          var marker = L.marker([activite.geometry.coordinates[1], activite.geometry.coordinates[0]]).addTo(mymap);
-          marker.bindPopup("<b>"+activite.fields.title +"</b><br>"+activite.fields.date_start );
+      var sanisettes = !{JSON.stringify(sanisettes)};
+      console.log('sanisette :' + sanisettes);
+      for(const sanisette of sanisettes){
+         console.log('coucou');
+        if(sanisette.geometry){
+          console.log(sanisette.geometry.coordinates);
+          let marker = L.marker([sanisette.geometry.coordinates[1], sanisette.geometry.coordinates[0]]).addTo(mymap);
+          marker.bindPopup(sanisette.fields.adresse);
         }
       }
